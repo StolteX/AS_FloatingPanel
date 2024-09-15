@@ -32,6 +32,15 @@ V1.03
 	-BugFixes
 	-Add get and set CloseOnTap
 		-Default: True
+V1.04
+	-BugFix
+V1.05
+	-Add get and set CornerRadius
+		-Default: 10dip
+V1.06
+	-B4J BugFix
+V1.07
+	-BugFix - The function "Close" works now with CloseOnTap = False
 #End If
 #Event: Close
 
@@ -46,6 +55,7 @@ Sub Class_Globals
 	Private xui As XUI
 	Private xpnl_Parent As B4XView
 	Private xpnl_Background As B4XView
+	Private xpnl_tmp As B4XView
 	Private xpnl_Panel As B4XView
 	Private xpnl_Arrow As B4XView
 	
@@ -53,6 +63,7 @@ Sub Class_Globals
 	Private m_Duration As Long
 	Private m_ArrowVisible As Boolean = False
 	Private m_CloseOnTap As Boolean = True
+	Private m_CornerRadius As Float = 10dip
 	
 	Public BackgroundColor As Int
 End Sub
@@ -67,15 +78,24 @@ Public Sub Initialize(Callback As Object, EventName As String,Parent As B4XView)
 	BackgroundColor = xui.Color_ARGB(152,0,0,0)
 	xpnl_Panel = xui.CreatePanel("")
 	
+	xpnl_tmp = xui.CreatePanel("")
+	Parent.AddView(xpnl_tmp,-10000dip,0,0,0)
+	xpnl_tmp.AddView(xpnl_Panel,-10000dip,0,0,0)
+	
 	g_ArrowProperties = CreateASFloatingPanel_ArrowProperties(getArrowOrientation_Top,xui.Color_ARGB(255,32, 33, 37),20dip,10dip,-1,-1)
 End Sub
 
 Public Sub PreSize(Width As Float,Height As Float)
-	xpnl_Panel.Visible = False
-	xpnl_Panel.SetLayoutAnimated(0,0,0,Width,Height)
+	xpnl_tmp.SetLayoutAnimated(0,-10000dip,0,Width,Height)
+	xpnl_Panel.SetLayoutAnimated(0,0dip,0,Width,Height)
 End Sub
 
 Public Sub Show(Left As Float,Top As Float,Width As Float,Height As Float)
+	#If B4J
+	Sleep(200)
+	#End If
+	xpnl_tmp.RemoveViewFromParent
+	
 	xpnl_Background = xui.CreatePanel("xpnl_Background")
 	xpnl_Parent.AddView(xpnl_Background,0,0,xpnl_Parent.Width,xpnl_Parent.Height)
 	xpnl_Background.Color = BackgroundColor
@@ -116,8 +136,8 @@ Public Sub Show(Left As Float,Top As Float,Width As Float,Height As Float)
 		xpnl_Panel.SetLayoutAnimated(m_Duration,Left,Top,Width,Height)
 	End If
 	
-	xpnl_Panel.SetColorAndBorder(xui.Color_ARGB(255,32, 33, 37),0,0,10dip)
-	xpnl_Panel.Visible = True
+	xpnl_Panel.SetColorAndBorder(xui.Color_ARGB(255,32, 33, 37),0,0,m_CornerRadius)
+	SetCircleClip(xpnl_Panel,m_CornerRadius)
 	
 	Sleep(m_Duration)
 	
@@ -168,13 +188,17 @@ Private Sub xpnl_Background_MouseClicked (EventData As MouseEvent)
 #Else
 Private Sub xpnl_Background_Click
 #End If
-	Close
+	CloseIntern(False)
 End Sub
 
 Public Sub Close
-	If m_CloseOnTap = False Then Return
+	CloseIntern(True)
+End Sub
+
+Private Sub CloseIntern(Force As Boolean)
+	If m_CloseOnTap = False And Force = False Then Return
 	EventClose
-	If m_ArrowVisible Then xpnl_Arrow.SetVisibleAnimated(0,False) 
+	If m_ArrowVisible Then xpnl_Arrow.SetVisibleAnimated(0,False)
 	xpnl_Background.SetVisibleAnimated(250,False)
 	
 	If m_OpenOrientation = getOpenOrientation_LeftBottom Then
@@ -197,6 +221,17 @@ Public Sub Close
 	
 	Sleep(250)
 	xpnl_Background.RemoveViewFromParent
+End Sub
+
+'Default: 10dip
+Public Sub getCornerRadius As Float
+	Return m_CornerRadius
+End Sub
+
+Public Sub setCornerRadius(Radius As Float)
+	m_CornerRadius = Radius
+	xpnl_Panel.SetColorAndBorder(xpnl_Panel.Color,0,0,Radius)
+	SetCircleClip(xpnl_Panel,Radius)
 End Sub
 
 Public Sub getCloseOnTap As Boolean
@@ -233,6 +268,28 @@ End Sub
 
 Public Sub setArrowProperties(Properties As ASFloatingPanel_ArrowProperties)
 	g_ArrowProperties = Properties
+End Sub
+
+Private Sub SetCircleClip (pnl As B4XView,radius As Int)'ignore
+#if B4J
+	Dim jo As JavaObject = pnl
+	Dim shape As JavaObject
+	Dim cx As Double = pnl.Width
+	Dim cy As Double = pnl.Height
+	shape.InitializeNewInstance("javafx.scene.shape.Rectangle", Array(cx, cy))
+	If radius > 0 Then
+		Dim d As Double = radius
+		shape.RunMethod("setArcHeight", Array(d))
+		shape.RunMethod("setArcWidth", Array(d))
+	End If
+	jo.RunMethod("setClip", Array(shape))
+#else if B4A
+	Dim jo As JavaObject = pnl
+	jo.RunMethod("setClipToOutline", Array(True))
+	pnl.SetColorAndBorder(pnl.Color,0,0,m_CornerRadius)
+	#Else
+	pnl.SetColorAndBorder(pnl.Color,0,0,m_CornerRadius)
+#end if
 End Sub
 
 #Region Enums

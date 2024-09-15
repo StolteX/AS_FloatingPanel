@@ -26,7 +26,20 @@ End Sub
 Private Sub B4XPage_Created (Root1 As B4XView)
 	Root = Root1
 	Root.LoadLayout("frm_main")
+
+End Sub
+
+#If B4J
+Private Sub xlbl_ClickMe_MouseClicked (EventData As MouseEvent)
+#Else
+Private Sub xlbl_ClickMe_Click
+#End If
+
+	OpenPanel
 	
+End Sub
+
+Private Sub OpenPanel
 	
 	fp.Initialize(Me,"fp",Root)
 	fp.PreSize(200dip,200dip)
@@ -37,19 +50,13 @@ Private Sub B4XPage_Created (Root1 As B4XView)
 	fp.ArrowProperties.Left = xlbl_ClickMe.Width/2
 	fp.ArrowProperties.ArrowOrientation = fp.ArrowOrientation_Top
 	fp.CloseOnTap = False
-End Sub
 
-#If B4J
-Private Sub xlbl_ClickMe_MouseClicked (EventData As MouseEvent)
-#Else
-Private Sub xlbl_ClickMe_Click
-#End If
-	
 	'Under the Button
 	Dim Top As Float = xlbl_ClickMe.Top + xlbl_ClickMe.Height + 10dip
 	fp.Show(xlbl_ClickMe.Left,Top ,200dip,200dip)
-	
+
 	'Top of the Button
 '	Dim Top As Float = xlbl_ClickMe.Top - 200dip - 10dip
 '	fp.Show(xlbl_ClickMe.Left,Top ,200dip,200dip)
+	
 End Sub

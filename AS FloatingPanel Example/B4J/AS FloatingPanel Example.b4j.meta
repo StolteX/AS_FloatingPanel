@@ -7,6 +7,6 @@ ModuleBreakpoints2=
 ModuleClosedNodes0=1,4
 ModuleClosedNodes1=
 ModuleClosedNodes2=1
-NavigationStack=AS_FloatingPanel,getArrowOrientation_Bottom,238,0,AS_FloatingPanel,getArrowOrientation_Right,246,0,AS_FloatingPanel,getArrowOrientation_Left,242,0,AS_FloatingPanel,Initialize,54,1,AS_FloatingPanel,Class_Globals,27,6,AS_FloatingPanel,setArrowVisible,193,1,AS_FloatingPanel,getArrowProperties,198,5,AS_FloatingPanel,setArrowProperties,199,1,B4XMainPage,B4XPage_Created,28,6,AS_FloatingPanel,Show,112,6
+NavigationStack=AS_FloatingPanel,getCornerRadius,211,4,AS_FloatingPanel,setCornerRadius,213,6,AS_FloatingPanel,PreSize,80,0,AS_FloatingPanel,Show,84,6,B4XMainPage,B4XPage_Created,22,0,B4XMainPage,xlbl_ClickMe_MouseClicked,29,1,AS_FloatingPanel,xpnl_Background_MouseClicked,182,1,AS_FloatingPanel,CloseIntern,190,5,B4XMainPage,OpenPanel,45,6,AS_FloatingPanel,Close,188,2
 SelectedBuild=0
 VisibleModules=2,1
