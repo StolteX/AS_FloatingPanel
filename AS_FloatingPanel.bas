@@ -41,6 +41,11 @@ V1.06
 	-B4J BugFix
 V1.07
 	-BugFix - The function "Close" works now with CloseOnTap = False
+V1.08
+	-B4I Improvements - the entire screen is now used for the background shadow
+		-When the navigation bar was hidden, there was an area at the top that did not go dark when the menu was opened
+		-The height of the area is now determined and the gap closed
+		-B4XPages is now required in B4I
 #End If
 #Event: Close
 
@@ -64,6 +69,7 @@ Sub Class_Globals
 	Private m_ArrowVisible As Boolean = False
 	Private m_CloseOnTap As Boolean = True
 	Private m_CornerRadius As Float = 10dip
+	Private m_TopBarOffset As Float = 0
 	
 	Public BackgroundColor As Int
 End Sub
@@ -96,8 +102,14 @@ Public Sub Show(Left As Float,Top As Float,Width As Float,Height As Float)
 	#End If
 	xpnl_tmp.RemoveViewFromParent
 	
+	#If B4I
+	m_TopBarOffset = B4XPages.GetNativeParent(B4XPages.GetManager.GetTopPage.B4XPage).RootPanel.Top
+	#End If
+	
+	Top = Top + m_TopBarOffset
+	
 	xpnl_Background = xui.CreatePanel("xpnl_Background")
-	xpnl_Parent.AddView(xpnl_Background,0,0,xpnl_Parent.Width,xpnl_Parent.Height)
+	xpnl_Parent.AddView(xpnl_Background,0,-m_TopBarOffset,xpnl_Parent.Width,xpnl_Parent.Height + m_TopBarOffset)
 	xpnl_Background.Color = BackgroundColor
 	
 	xpnl_Panel.RemoveViewFromParent
@@ -154,7 +166,7 @@ Public Sub Show(Left As Float,Top As Float,Width As Float,Height As Float)
 		Dim p As B4XPath
 		
 		Select g_ArrowProperties.ArrowOrientation
-			Case getArrowOrientation_Top			
+			Case getArrowOrientation_Top
 				'p.Initialize(xpnl_Arrow.Width / 2, 0).LineTo(xpnl_Arrow.Width, xpnl_Arrow.Height).LineTo(0, xpnl_Arrow.Height).LineTo(xpnl_Arrow.Width / 2, 0)
 				
 				p.Initialize(xpnl_Arrow.Width/2,0).LineTo(0,xpnl_Arrow.Height).LineTo(xpnl_Arrow.Width,xpnl_Arrow.Height).LineTo(xpnl_Arrow.Width/2,0)

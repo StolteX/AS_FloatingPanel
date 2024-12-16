@@ -26,7 +26,6 @@ End Sub
 Private Sub B4XPage_Created (Root1 As B4XView)
 	Root = Root1
 	Root.LoadLayout("frm_main")
-
 End Sub
 
 #If B4J
@@ -49,7 +48,7 @@ Private Sub OpenPanel
 	fp.ArrowVisible = True
 	fp.ArrowProperties.Left = xlbl_ClickMe.Width/2
 	fp.ArrowProperties.ArrowOrientation = fp.ArrowOrientation_Top
-	fp.CloseOnTap = False
+	fp.CloseOnTap = True
 
 	'Under the Button
 	Dim Top As Float = xlbl_ClickMe.Top + xlbl_ClickMe.Height + 10dip
